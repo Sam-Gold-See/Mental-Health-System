@@ -11,6 +11,7 @@ manifest.local.json
 # 忽略编辑器自动生成的文件
 .idea/
 .vscode/
+.hbuliderx/
  
 # 忽略日志文件
 logs/
