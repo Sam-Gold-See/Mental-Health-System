@@ -76,8 +76,112 @@ if (uni.restoreGlobal) {
     );
   }
   const PagesLogLogIndex = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$2], ["__file", "C:/Hcx/Code/aProject/test/frontend/src/pages/log/logIndex.vue"]]);
-  const _sfc_main$3 = {};
-  function _sfc_render$1(_ctx, _cache) {
+  const _sfc_main$3 = {
+    data() {
+      return {
+        //键盘高度
+        keyboardHeight: 0,
+        //底部消息发送高度
+        bottomHeight: 0,
+        //滚动距离
+        scrollTop: 0,
+        userId: "",
+        //发送的消息
+        chatMsg: "",
+        msgList: [
+          {
+            botContent: "你好啊，很高兴你可以关注我，请问我有什么可以帮助你的吗？",
+            userContent: "",
+            image: "/static/common/unname1.jpeg"
+          },
+          {
+            botContent: "",
+            userContent: "你好呀，非常高兴认识你",
+            image: "/static/common/unname2.jpg"
+          }
+        ]
+      };
+    },
+    updated() {
+      this.scrollToBottom();
+    },
+    computed: {
+      windowHeight() {
+        return this.rpxTopx(uni.getSystemInfoSync().windowHeight);
+      },
+      // 键盘弹起来的高度+发送框高度
+      inputHeight() {
+        return this.bottomHeight + this.keyboardHeight;
+      }
+    },
+    onLoad() {
+      uni.onKeyboardHeightChange((res) => {
+        this.keyboardHeight = this.rpxTopx(res.height);
+        if (this.keyboardHeight < 0)
+          this.keyboardHeight = 0;
+      });
+    },
+    onUnload() {
+    },
+    methods: {
+      goback() {
+        uni.switchTab({
+          url: "/pages/tutorship/tutorship"
+        });
+      },
+      focus() {
+        this.scrollToBottom();
+      },
+      blur() {
+        this.scrollToBottom();
+      },
+      // px转换成rpx
+      rpxTopx(px) {
+        let deviceWidth = uni.getSystemInfoSync().windowWidth;
+        let rpx = 750 / deviceWidth * Number(px);
+        return Math.floor(rpx);
+      },
+      // 监视聊天发送栏高度
+      sendHeight() {
+        setTimeout(() => {
+          let query = uni.createSelectorQuery();
+          query.select(".send-msg").boundingClientRect();
+          query.exec((res) => {
+            this.bottomHeight = this.rpxTopx(res[0].height);
+          });
+        }, 10);
+      },
+      // 滚动至聊天底部
+      scrollToBottom(e) {
+        setTimeout(() => {
+          let query = uni.createSelectorQuery().in(this);
+          query.select("#scrollview").boundingClientRect();
+          query.select("#msglistview").boundingClientRect();
+          query.exec((res) => {
+            if (res[1].height > res[0].height) {
+              this.scrollTop = this.rpxTopx(res[1].height - res[0].height);
+            }
+          });
+        }, 15);
+      },
+      // 发送消息
+      handleSend() {
+        if (!this.chatMsg || !/^\s+$/.test(this.chatMsg)) {
+          let obj = {
+            botContent: "",
+            userContent: this.chatMsg,
+            image: "/static/common/unname2.jpg"
+          };
+          this.msgList.push(obj);
+          this.chatMsg = "";
+          this.scrollToBottom();
+        } else {
+          this.$modal.showToast("不能发送空白消息");
+        }
+      }
+    }
+  };
+  function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_Navbar = vue.resolveComponent("Navbar");
     return vue.openBlock(), vue.createElementBlock(
       vue.Fragment,
@@ -87,15 +191,128 @@ if (uni.restoreGlobal) {
           showLeft: false,
           title: "心理咨询"
         }),
-        vue.createElementVNode("view", null, [
-          vue.createElementVNode("text", null, "chatIndex")
+        vue.createElementVNode("view", { class: "chat" }, [
+          vue.createElementVNode("scroll-view", {
+            style: vue.normalizeStyle({ height: `${$options.windowHeight - $options.inputHeight - 180}rpx` }),
+            id: "scrollview",
+            "scroll-y": "true",
+            "scroll-top": $data.scrollTop,
+            class: "scroll-view"
+          }, [
+            vue.createCommentVNode(" 聊天主体 "),
+            vue.createElementVNode("view", {
+              id: "msglistview",
+              class: "chat-body"
+            }, [
+              vue.createCommentVNode(" 聊天记录 "),
+              (vue.openBlock(true), vue.createElementBlock(
+                vue.Fragment,
+                null,
+                vue.renderList($data.msgList, (item, index) => {
+                  return vue.openBlock(), vue.createElementBlock("view", { key: index }, [
+                    vue.createCommentVNode(" 自己发的消息 "),
+                    item.userContent != "" ? (vue.openBlock(), vue.createElementBlock("view", {
+                      key: 0,
+                      class: "item self"
+                    }, [
+                      vue.createCommentVNode(" 文字内容 "),
+                      vue.createElementVNode(
+                        "view",
+                        { class: "content right" },
+                        vue.toDisplayString(item.userContent),
+                        1
+                        /* TEXT */
+                      ),
+                      vue.createCommentVNode(" 头像 "),
+                      vue.createElementVNode("image", {
+                        class: "avatar",
+                        src: item.image
+                      }, null, 8, ["src"])
+                    ])) : vue.createCommentVNode("v-if", true),
+                    vue.createCommentVNode(" 机器人发的消息 "),
+                    item.botContent != "" ? (vue.openBlock(), vue.createElementBlock("view", {
+                      key: 1,
+                      class: "item Ai"
+                    }, [
+                      vue.createCommentVNode(" 头像 "),
+                      vue.createElementVNode("image", {
+                        class: "avatar",
+                        src: item.image
+                      }, null, 8, ["src"]),
+                      vue.createCommentVNode(" 文字内容 "),
+                      vue.createElementVNode(
+                        "view",
+                        { class: "content left" },
+                        vue.toDisplayString(item.botContent),
+                        1
+                        /* TEXT */
+                      )
+                    ])) : vue.createCommentVNode("v-if", true)
+                  ]);
+                }),
+                128
+                /* KEYED_FRAGMENT */
+              ))
+            ])
+          ], 12, ["scroll-top"]),
+          vue.createCommentVNode(" 底部消息发送栏 "),
+          vue.createCommentVNode(" 用来占位，防止聊天消息被发送框遮挡 "),
+          vue.createElementVNode(
+            "view",
+            {
+              class: "chat-bottom",
+              style: vue.normalizeStyle({ height: `${$options.inputHeight}rpx` })
+            },
+            [
+              vue.createElementVNode(
+                "view",
+                {
+                  class: "send-msg",
+                  style: vue.normalizeStyle({ bottom: `${$data.keyboardHeight - 60}rpx` })
+                },
+                [
+                  vue.createElementVNode("view", { class: "uni-textarea" }, [
+                    vue.withDirectives(vue.createElementVNode(
+                      "textarea",
+                      {
+                        "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $data.chatMsg = $event),
+                        maxlength: "300",
+                        "confirm-type": "send",
+                        onConfirm: _cache[1] || (_cache[1] = (...args) => $options.handleSend && $options.handleSend(...args)),
+                        placeholder: "快来聊天吧~",
+                        "show-confirm-bar": false,
+                        "adjust-position": false,
+                        onLinechange: _cache[2] || (_cache[2] = (...args) => $options.sendHeight && $options.sendHeight(...args)),
+                        onFocus: _cache[3] || (_cache[3] = (...args) => $options.focus && $options.focus(...args)),
+                        onBlur: _cache[4] || (_cache[4] = (...args) => $options.blur && $options.blur(...args)),
+                        "auto-height": ""
+                      },
+                      null,
+                      544
+                      /* HYDRATE_EVENTS, NEED_PATCH */
+                    ), [
+                      [vue.vModelText, $data.chatMsg]
+                    ])
+                  ]),
+                  vue.createElementVNode("button", {
+                    onClick: _cache[5] || (_cache[5] = (...args) => $options.handleSend && $options.handleSend(...args)),
+                    class: "send-btn"
+                  }, "发送")
+                ],
+                4
+                /* STYLE */
+              )
+            ],
+            4
+            /* STYLE */
+          )
         ])
       ],
       64
       /* STABLE_FRAGMENT */
     );
   }
-  const PagesChatChatIndex = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$1], ["__file", "C:/Hcx/Code/aProject/test/frontend/src/pages/chat/chatIndex.vue"]]);
+  const PagesChatChatIndex = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$1], ["__scopeId", "data-v-35ca6e25"], ["__file", "C:/Hcx/Code/aProject/test/frontend/src/pages/chat/chatIndex.vue"]]);
   const _sfc_main$2 = {};
   function _sfc_render(_ctx, _cache) {
     const _component_Navbar = vue.resolveComponent("Navbar");
@@ -107,8 +324,12 @@ if (uni.restoreGlobal) {
           showLeft: false,
           title: "个人中心"
         }),
-        vue.createElementVNode("view", null, [
-          vue.createElementVNode("text", null, "myIndex")
+        vue.createElementVNode("view", { class: "userBody" }, [
+          vue.createElementVNode("view", { class: "baseInfo" }, [
+            vue.createElementVNode("view", { class: "avatar" }, [
+              vue.createElementVNode("view")
+            ])
+          ])
         ])
       ],
       64
@@ -1561,6 +1782,13 @@ This will fail in production.`);
     return useStore;
   }
   const ON_LAUNCH = "onLaunch";
+  function formatAppLog(type, filename, ...args) {
+    if (uni.__log__) {
+      uni.__log__(type, filename, ...args);
+    } else {
+      console[type].apply(console, [...args, filename]);
+    }
+  }
   const createHook = (lifecycle) => (hook, target = vue.getCurrentInstance()) => {
     !vue.isInSSRComponentSetup && vue.injectHook(lifecycle, hook, target);
   };
@@ -1624,6 +1852,7 @@ This will fail in production.`);
         uni.getSystemInfo({
           success: (e) => {
             saveDeviceInfo(e);
+            formatAppLog("log", "at App.vue:32", e);
           }
         });
       });
