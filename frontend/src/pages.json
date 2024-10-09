@@ -1,0 +1,61 @@
+{
+	"pages": [
+		{
+			"path": "pages/index",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/log/logIndex",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/chat/chatIndex",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+				{
+			"path": "pages/my/myIndex",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}
+	],
+	"tabBar":{
+		"color": "#7A7E83",
+		"selectedColor": "#3cc51f",
+		"borderStyle": "black",
+		"backgroundColor": "#F8F8F8",
+		"list": [
+			{
+				"pagePath": "pages/index",
+				"text": "主页",
+				"iconPath": "static/icon/tabBar/home.png"
+			},
+			{
+				"pagePath": "pages/log/logIndex",
+				"text": "心理日志",
+				"iconPath": "static/icon/tabBar/log.png"
+			},
+			{
+				"pagePath": "pages/chat/chatIndex",
+				"text": "心理咨询",
+				"iconPath": "static/icon/tabBar/chat.png"
+			},
+			{
+				"pagePath": "pages/my/myIndex",
+				"text": "我的信息",
+				"iconPath": "static/icon/tabBar/my.png"
+			}
+		]
+	},
+	"globalStyle":{
+		"app-plus": {
+			"bounce": "none"
+		}
+	}
+}
