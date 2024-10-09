@@ -39,7 +39,7 @@ if (uni.restoreGlobal) {
     return target;
   };
   const _sfc_main$5 = {};
-  function _sfc_render$3(_ctx, _cache) {
+  function _sfc_render$2(_ctx, _cache) {
     const _component_Navbar = vue.resolveComponent("Navbar");
     return vue.openBlock(), vue.createElementBlock(
       vue.Fragment,
@@ -55,9 +55,9 @@ if (uni.restoreGlobal) {
       /* STABLE_FRAGMENT */
     );
   }
-  const PagesIndex = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$3], ["__file", "C:/Hcx/Code/aProject/test/frontend/src/pages/index.vue"]]);
+  const PagesIndex = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$2], ["__file", "C:/Hcx/Code/aProject/test/frontend/src/pages/index.vue"]]);
   const _sfc_main$4 = {};
-  function _sfc_render$2(_ctx, _cache) {
+  function _sfc_render$1(_ctx, _cache) {
     const _component_Navbar = vue.resolveComponent("Navbar");
     return vue.openBlock(), vue.createElementBlock(
       vue.Fragment,
@@ -75,7 +75,7 @@ if (uni.restoreGlobal) {
       /* STABLE_FRAGMENT */
     );
   }
-  const PagesLogLogIndex = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$2], ["__file", "C:/Hcx/Code/aProject/test/frontend/src/pages/log/logIndex.vue"]]);
+  const PagesLogLogIndex = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$1], ["__file", "C:/Hcx/Code/aProject/test/frontend/src/pages/log/logIndex.vue"]]);
   const _sfc_main$3 = {
     data() {
       return {
@@ -181,7 +181,7 @@ if (uni.restoreGlobal) {
       }
     }
   };
-  function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_Navbar = vue.resolveComponent("Navbar");
     return vue.openBlock(), vue.createElementBlock(
       vue.Fragment,
@@ -312,31 +312,259 @@ if (uni.restoreGlobal) {
       /* STABLE_FRAGMENT */
     );
   }
-  const PagesChatChatIndex = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$1], ["__scopeId", "data-v-35ca6e25"], ["__file", "C:/Hcx/Code/aProject/test/frontend/src/pages/chat/chatIndex.vue"]]);
-  const _sfc_main$2 = {};
-  function _sfc_render(_ctx, _cache) {
-    const _component_Navbar = vue.resolveComponent("Navbar");
-    return vue.openBlock(), vue.createElementBlock(
-      vue.Fragment,
-      null,
-      [
-        vue.createVNode(_component_Navbar, {
-          showLeft: false,
-          title: "个人中心"
-        }),
-        vue.createElementVNode("view", { class: "userBody" }, [
-          vue.createElementVNode("view", { class: "baseInfo" }, [
-            vue.createElementVNode("view", { class: "avatar" }, [
-              vue.createElementVNode("view")
+  const PagesChatChatIndex = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render], ["__scopeId", "data-v-35ca6e25"], ["__file", "C:/Hcx/Code/aProject/test/frontend/src/pages/chat/chatIndex.vue"]]);
+  const _sfc_main$2 = {
+    __name: "myIndex",
+    setup(__props) {
+      const src = vue.ref("../../static/pig.jpg");
+      const user = vue.ref({
+        userName: "张三",
+        userId: "123435",
+        intrduction: "我爱睡觉",
+        school: "",
+        sex: "",
+        birthday: "",
+        city: ""
+      });
+      const school = ["清华大学", "北京大学", "复旦大学", "南京大学", "华南师范大学"];
+      const sex = ["男", "女"];
+      const chooseImg = () => {
+        uni.chooseImage({
+          count: 1,
+          sourceType: ["album"],
+          sizeType: ["original", "compressed"],
+          success: (res) => {
+            src.value = res.tempFilePaths[0];
+          }
+        });
+      };
+      const bindSchoolChange = (e) => {
+        user.value.school = school[e.detail.value];
+        uni.setStorage({
+          key: "school",
+          data: user.value.school
+        });
+      };
+      const bindSexChange = (e) => {
+        user.value.sex = sex[e.detail.value];
+        uni.setStorage({
+          key: "sex",
+          data: user.value.sex
+        });
+      };
+      const bindDateChange = (e) => {
+        user.value.birthday = e.detail.value;
+        uni.setStorage({
+          key: "birthday",
+          data: e.detail.value
+        });
+      };
+      const bindCityChange = (e) => {
+        user.value.city = e.detail.value[0];
+        uni.setStorage({
+          key: "city",
+          data: user.value.city
+        });
+      };
+      vue.onMounted(() => {
+        uni.getStorage({
+          key: "userName",
+          success: (res) => {
+            user.value.userName = res.data;
+          }
+        });
+        uni.getStorage({
+          key: "userId",
+          success: (res) => {
+            user.value.userId = res.data;
+          }
+        });
+        uni.getStorage({
+          key: "intrduction",
+          success: (res) => {
+            user.value.intrduction = res.data;
+          }
+        });
+        uni.getStorage({
+          key: "school",
+          success: (res) => {
+            user.value.school = res.data;
+          }
+        });
+        uni.getStorage({
+          key: "sex",
+          success: (res) => {
+            user.value.sex = res.data;
+          }
+        });
+        uni.getStorage({
+          key: "birthday",
+          success: (res) => {
+            user.value.birthday = res.data;
+          }
+        });
+        uni.getStorage({
+          key: "city",
+          success: (res) => {
+            user.value.city = res.data;
+          }
+        });
+      });
+      return (_ctx, _cache) => {
+        return vue.openBlock(), vue.createElementBlock("view", { class: "changeInfo" }, [
+          vue.createElementVNode("view", { class: "nav-box" }, [
+            vue.createElementVNode("view", { class: "title" }, "编辑个人资料"),
+            vue.createElementVNode("navigator", {
+              "open-type": "switchTab",
+              url: "/pages/personal/personal",
+              class: "iconfont iconfanhui icon-nav"
+            })
+          ]),
+          vue.createElementVNode("view", { class: "box" }, [
+            vue.createElementVNode("view", { class: "img-box" }, [
+              vue.createElementVNode("image", {
+                class: "img",
+                src: src.value,
+                onClick: chooseImg
+              }, null, 8, ["src"]),
+              vue.createElementVNode("view", { class: "text" }, "点击更换头像")
             ])
+          ]),
+          vue.createElementVNode("view", { class: "info-box" }, [
+            vue.createElementVNode("navigator", {
+              "open-type": "redirect",
+              url: "/pages/modify/modify?title=userName",
+              class: "text-box"
+            }, [
+              vue.createElementVNode("view", { class: "left" }, "昵称"),
+              vue.createElementVNode("view", { class: "iconfont iconchangyongicon- icon-box" }),
+              vue.createElementVNode(
+                "view",
+                { class: "right" },
+                vue.toDisplayString(user.value.userName),
+                1
+                /* TEXT */
+              )
+            ]),
+            vue.createElementVNode("navigator", {
+              "open-type": "redirect",
+              url: "/pages/modify/modify?title=douyinId",
+              class: "text-box"
+            }, [
+              vue.createElementVNode("view", { class: "left" }, "手机号"),
+              vue.createElementVNode("view", { class: "iconfont iconchangyongicon- icon-box" }),
+              vue.createElementVNode(
+                "view",
+                { class: "right" },
+                vue.toDisplayString(user.value.userId),
+                1
+                /* TEXT */
+              )
+            ]),
+            vue.createElementVNode("navigator", {
+              "open-type": "redirect",
+              url: "/pages/modify/modify?title=intrduction",
+              class: "text-box"
+            }, [
+              vue.createElementVNode("view", { class: "left" }, "简介"),
+              vue.createElementVNode("view", { class: "iconfont iconchangyongicon- icon-box" }),
+              vue.createElementVNode(
+                "view",
+                { class: "right" },
+                vue.toDisplayString(user.value.intrduction),
+                1
+                /* TEXT */
+              )
+            ]),
+            vue.createElementVNode(
+              "picker",
+              {
+                range: school,
+                onChange: bindSchoolChange
+              },
+              [
+                vue.createElementVNode("view", { class: "text-box" }, [
+                  vue.createElementVNode("view", { class: "left" }, "学校"),
+                  vue.createElementVNode("view", { class: "iconfont iconchangyongicon- icon-box" }),
+                  vue.createElementVNode(
+                    "view",
+                    { class: "right" },
+                    vue.toDisplayString(user.value.school),
+                    1
+                    /* TEXT */
+                  )
+                ])
+              ],
+              32
+              /* HYDRATE_EVENTS */
+            ),
+            vue.createElementVNode(
+              "picker",
+              {
+                range: sex,
+                onChange: bindSexChange
+              },
+              [
+                vue.createElementVNode("view", { class: "text-box" }, [
+                  vue.createElementVNode("view", { class: "left" }, "性别"),
+                  vue.createElementVNode("view", { class: "iconfont iconchangyongicon- icon-box" }),
+                  vue.createElementVNode(
+                    "view",
+                    { class: "right" },
+                    vue.toDisplayString(user.value.sex),
+                    1
+                    /* TEXT */
+                  )
+                ])
+              ],
+              32
+              /* HYDRATE_EVENTS */
+            ),
+            vue.createElementVNode("picker", {
+              mode: "date",
+              value: user.value.birthday,
+              onChange: bindDateChange
+            }, [
+              vue.createElementVNode("view", { class: "text-box" }, [
+                vue.createElementVNode("view", { class: "left" }, "生日"),
+                vue.createElementVNode("view", { class: "iconfont iconchangyongicon- icon-box" }),
+                vue.createElementVNode(
+                  "view",
+                  { class: "right" },
+                  vue.toDisplayString(user.value.birthday),
+                  1
+                  /* TEXT */
+                )
+              ])
+            ], 40, ["value"]),
+            vue.createElementVNode(
+              "picker",
+              {
+                mode: "region",
+                onChange: bindCityChange
+              },
+              [
+                vue.createElementVNode("view", { class: "text-box" }, [
+                  vue.createElementVNode("view", { class: "left" }, "地区"),
+                  vue.createElementVNode("view", { class: "iconfont iconchangyongicon- icon-box" }),
+                  vue.createElementVNode(
+                    "view",
+                    { class: "right" },
+                    vue.toDisplayString(user.value.city),
+                    1
+                    /* TEXT */
+                  )
+                ])
+              ],
+              32
+              /* HYDRATE_EVENTS */
+            )
           ])
-        ])
-      ],
-      64
-      /* STABLE_FRAGMENT */
-    );
-  }
-  const PagesMyMyIndex = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render], ["__file", "C:/Hcx/Code/aProject/test/frontend/src/pages/my/myIndex.vue"]]);
+        ]);
+      };
+    }
+  };
+  const PagesMyMyIndex = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["__file", "C:/Hcx/Code/aProject/test/frontend/src/pages/my/myIndex.vue"]]);
   __definePage("pages/index", PagesIndex);
   __definePage("pages/log/logIndex", PagesLogLogIndex);
   __definePage("pages/chat/chatIndex", PagesChatChatIndex);
