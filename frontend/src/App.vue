@@ -29,6 +29,7 @@ onLaunch(() => {
   uni.getSystemInfo({
     success: (e) => {
       saveDeviceInfo(e);
+      console.log(e);
     },
   });
 });

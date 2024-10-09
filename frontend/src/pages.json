@@ -52,6 +52,10 @@
 				"iconPath": "static/icon/tabBar/my.png"
 			}
 		]
-		
+	},
+	"globalStyle":{
+		"app-plus": {
+			"bounce": "none"
+		}
 	}
 }
