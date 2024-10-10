@@ -1,5 +1,6 @@
 from deepface import DeepFace
 import cv2
+import numpy as np
 
 class Emotion:
     def __init__(self, analysis_interval=30):
@@ -14,7 +15,7 @@ class Emotion:
         :param path: 图片的地址
         :return: 识别出来的表情
         '''
-        img = cv2.imread(path)
+        img = cv2.cvtColor(np.array(path), cv2.COLOR_RGB2BGR)
         emotion_result = DeepFace.analyze(img, actions=['emotion'])
 
         dominant_emotion = emotion_result[0]['dominant_emotion']
