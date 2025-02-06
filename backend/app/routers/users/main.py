@@ -15,13 +15,13 @@ router = APIRouter(
 
 
 @router.get("/")
-def get_users(sessionDB: SessionDB):
+def get_users(sessionDB: SessionDB) -> list[UserPublic]:
     users = sessionDB.exec(select(User)).all()
     return [UserPublic.model_validate(user) for user in users]
 
 
 @router.post("/")
-def create_user(user: UserCreate, sessionDB: SessionDB):
+def create_user(user: UserCreate, sessionDB: SessionDB) -> UserPublic:
     db_user = User(name=user.name, email=user.email, phone=user.phone, password=user.password)
     sessionDB.add(db_user)
     sessionDB.commit()

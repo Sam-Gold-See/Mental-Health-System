@@ -2,6 +2,7 @@ from sqlmodel import SQLModel, Field
 import datetime
 
 class Alert(SQLModel, table=True):
+    __tablename__ = "alerts"
     alert_id     : str               = Field(primary_key=True)
     user_id      : str               = Field(foreign_key="users.user_id")
     alert_type   : str               = Field(default="")
