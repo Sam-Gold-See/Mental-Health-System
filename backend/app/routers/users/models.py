@@ -1,20 +1,22 @@
-from typing import Optional
+from typing import Literal
 from sqlmodel import SQLModel, Field
 from pydantic import EmailStr, field_validator, UUID4
 import datetime
 import uuid
-import bcrypt
+from passlib.context import CryptContext
+
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 class UserBase(SQLModel):
     name: str = Field(index=True)
-    email: EmailStr = Field(unique=True, index=True)
-    phone: Optional[str] = Field(default=None)
+    email: EmailStr | None = Field(unique=True, index=True, default=None)
+    phone: str | None = Field(default=None)
 
 
 class User(UserBase, table=True):
     __tablename__ = "users"
-    id: Optional[int] = Field(default=None, primary_key=True)
     user_id: UUID4 = Field(
         default_factory=lambda: uuid.uuid4(),
         primary_key=True,
@@ -46,8 +48,12 @@ class UserCreate(UserBase):
     # bcrypt 加密
     @field_validator("password")
     def validate_password(cls, password: str) -> str:
-        return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+        return pwd_context.hash(password)
 
+class UserLogin(SQLModel):
+    type: Literal["email", "phone"]
+    login_info: EmailStr | str
+    password: str
 
 class UserPublic(UserBase):
-    id: int
+    user_id: UUID4
