@@ -1,10 +1,15 @@
-from sqlmodel import SQLModel, Field
+from sqlalchemy import Column, String, DateTime, ForeignKey
+from app.db.main import Base
 import datetime
 
-class Alert(SQLModel, table=True):
+
+class Alert(Base):
     __tablename__ = "alerts"
-    alert_id     : str               = Field(primary_key=True)
-    user_id      : str               = Field(foreign_key="users.user_id")
-    alert_type   : str               = Field(default="")
-    alert_message: str               = Field(default="")
-    created_at   : datetime.datetime = Field(default_factory=lambda: datetime.datetime.now(datetime.timezone.utc))
+    alert_id = Column(String, primary_key=True)
+    user_id = Column(String, ForeignKey("users.user_id"))
+    alert_type = Column(String, default="")
+    alert_message = Column(String, default="")
+    created_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.datetime.now(datetime.timezone.utc),
+    )

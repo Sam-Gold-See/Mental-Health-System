@@ -1,7 +1,3 @@
-import os
-from typing import Annotated
-
-import dotenv
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 
@@ -20,7 +16,7 @@ logger = get_logger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # 初始化数据库
-    create_db_and_tables()
+    await create_db_and_tables()
     yield
 
 

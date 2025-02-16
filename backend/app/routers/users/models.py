@@ -1,41 +1,47 @@
 from typing import Literal
-from sqlmodel import SQLModel, Field
-from pydantic import EmailStr, field_validator, UUID4
+from sqlalchemy import Column, String, DateTime, UUID
+from sqlalchemy.orm import declarative_mixin
+from pydantic import BaseModel, EmailStr, field_validator, UUID4
 import datetime
 import uuid
 from passlib.context import CryptContext
+from app.db.main import Base
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
-class UserBase(SQLModel):
-    name: str = Field(index=True)
-    email: EmailStr | None = Field(unique=True, index=True, default=None)
-    phone: str | None = Field(default=None)
+@declarative_mixin
+class UserBase:
+    name = Column(String, nullable=False)
+    email = Column(String, unique=True, index=True, nullable=True)
+    phone = Column(String, unique=True, index=True, nullable=True)
 
 
-class User(UserBase, table=True):
+class User(Base, UserBase):
     __tablename__ = "users"
-    user_id: UUID4 = Field(
-        default_factory=lambda: uuid.uuid4(),
+    user_id = Column(
+        UUID(as_uuid=True),
         primary_key=True,
+        default=uuid.uuid4,
         index=True,
-        description="用户ID",
     )
-    password: str
-
-    created_at: datetime.datetime = Field(
-        default_factory=lambda: datetime.datetime.now(datetime.timezone.utc),
-        description="创建时间",
+    password = Column(String, nullable=False)
+    created_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.datetime.now(datetime.timezone.utc),
     )
-    updated_at: datetime.datetime = Field(
-        default_factory=lambda: datetime.datetime.now(datetime.timezone.utc),
-        description="更新时间",
+    updated_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.datetime.now(datetime.timezone.utc),
+        onupdate=lambda: datetime.datetime.now(datetime.timezone.utc),
     )
 
 
-class UserCreate(UserBase):
+class UserCreate(BaseModel):
+    name: str
+    email: EmailStr | None = None
+    phone: str | None = None
     password: str
 
     @field_validator("phone")
@@ -45,15 +51,6 @@ class UserCreate(UserBase):
             raise ValueError("邮箱和手机号至少需要填写一个")
         return phone
 
-    # bcrypt 加密
     @field_validator("password")
     def validate_password(cls, password: str) -> str:
         return pwd_context.hash(password)
-
-class UserLogin(SQLModel):
-    type: Literal["email", "phone"]
-    login_info: EmailStr | str
-    password: str
-
-class UserPublic(UserBase):
-    user_id: UUID4

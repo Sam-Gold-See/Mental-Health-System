@@ -1,14 +1,10 @@
 import datetime
 import time
-from fastapi import Request, HTTPException, Depends, status
+from fastapi import Request, HTTPException
 from fastapi.responses import Response
 from starlette.middleware.base import BaseHTTPMiddleware
 from app.utils.logger import get_logger
-from app.config import config
-from fastapi.security import OAuth2PasswordBearer
-from jose import JWTError, jwt
-from sqlmodel import select
-from app.dependencies import get_current_user, token_manager
+from app.dependencies import token_manager
 
 logger = get_logger(__name__)
 
