@@ -1,10 +1,11 @@
-from fastapi import APIRouter
-from sqlmodel import select
-
-from .models import User, UserCreate, UserPublic
+from fastapi import APIRouter, Depends
+from sqlmodel import Session
+from .models import UserCreate, UserPublic
+from pydantic import UUID4
+from .repository import get_user_from_db, create_user_in_db
 from app.utils.logger import get_logger
 from .controller import *
-from app.db.main import SessionDB
+from app.db.main import get_session
 
 
 logger = get_logger(__name__)
@@ -15,15 +16,12 @@ router = APIRouter(
 
 
 @router.get("/")
-def get_users(sessionDB: SessionDB) -> list[UserPublic]:
-    users = sessionDB.exec(select(User)).all()
-    return [UserPublic.model_validate(user) for user in users]
+def get_users(user_id: UUID4, sessionDB: Session = Depends(get_session)) -> list[UserPublic]:
+    user = get_user_from_db(user_id, sessionDB)
+    return UserPublic.model_validate(user)
 
 
 @router.post("/")
-def create_user(user: UserCreate, sessionDB: SessionDB) -> UserPublic:
-    db_user = User(name=user.name, email=user.email, phone=user.phone, password=user.password)
-    sessionDB.add(db_user)
-    sessionDB.commit()
-    sessionDB.refresh(db_user)
+def create_user(user: UserCreate, sessionDB: Session = Depends(get_session)) -> UserPublic:
+    db_user = create_user_in_db(user, sessionDB)
     return UserPublic.model_validate(db_user)
