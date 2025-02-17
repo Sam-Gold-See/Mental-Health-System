@@ -25,7 +25,6 @@ class ChatRequest(BaseModel):
     system_prompt: Optional[str] = None
     content: str
     session_id: Optional[UUID4] = None
-    temperature: Optional[float] = 0.7
 
 
 class ChatResponse(BaseModel):
@@ -48,7 +47,6 @@ async def 发送消息(
             message=message,
             sessionDB=sessionDB,
             system_prompt=chat_request.system_prompt,
-            temperature=chat_request.temperature,
         )
         return ChatResponse(response=response, session_id=session_id)
     except Exception as e:

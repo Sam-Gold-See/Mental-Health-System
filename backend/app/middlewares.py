@@ -89,16 +89,14 @@ class TokenRefreshMiddleware(BaseHTTPMiddleware):
                 exp = datetime.datetime.fromtimestamp(
                     payload.get("exp"), tz=datetime.timezone.utc
                 )
-                if (exp - datetime.datetime.now(datetime.timezone.utc)).seconds < 5 * 60:
+                if (
+                    exp - datetime.datetime.now(datetime.timezone.utc)
+                ).seconds < 60 * 3600:
                     logger.info("刷新令牌")
-                    new_access_token, new_refresh_token = token_manager.refresh_token(
-                        token
-                    )
+                    new_access_token = token_manager.refresh_token(token)
                     request.state.new_access_token = new_access_token
-                    request.state.new_refresh_token = new_refresh_token
                     response = await call_next(request)
                     response.headers["X-New-Access-Token"] = new_access_token
-                    response.headers["X-New-Refresh-Token"] = new_refresh_token
                     return response
             except HTTPException:
                 # 如果验证失败，不中断请求，让后续的认证中间件处理

@@ -40,7 +40,9 @@ class TokenManager:
         """验证令牌并返回payload"""
         try:
             payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
+            logger.debug(f"payload: {payload}")
             if payload.get("type") != token_type:
+                logger.warning(f"无效的令牌类型: 需要 {token_type} 令牌")
                 raise HTTPException(
                     status_code=401, detail=f"无效的令牌类型: 需要 {token_type} 令牌"
                 )
@@ -48,6 +50,9 @@ class TokenManager:
         except jwt.ExpiredSignatureError:
             raise HTTPException(status_code=401, detail="令牌已过期")
         except jwt.JWTError:
+            raise HTTPException(status_code=401, detail="无效的令牌")
+        except Exception as e:
+            logger.error(f"验证令牌失败: {e}")
             raise HTTPException(status_code=401, detail="无效的令牌")
 
     def decode_token(self, token: str) -> str:
@@ -58,13 +63,12 @@ class TokenManager:
         except jwt.JWTError:
             return "游客"
 
-    def refresh_token(self, refresh_token: str) -> tuple[str, str]:
-        """使用刷新令牌创建新的访问令牌和刷新令牌"""
-        payload = self.verify_token(refresh_token, token_type="refresh")
+    def refresh_token(self, refresh_token: str) -> str:
+        """使用令牌创建新的访问令牌"""
+        payload = self.verify_token(refresh_token, token_type="access")
         user_id = UUID(payload.get("sub"))
         new_access_token = self.create_access_token(user_id)
-        new_refresh_token = self.create_refresh_token(user_id)
-        return new_access_token, new_refresh_token
+        return new_access_token
 
 
 token_manager = TokenManager()

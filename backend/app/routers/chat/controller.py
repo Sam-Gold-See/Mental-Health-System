@@ -44,7 +44,7 @@ class ChatController:
         return langchain_messages
 
     async def _generate_ai_response(
-        self, messages: List[BaseMessage], temperature: float
+        self, messages: List[BaseMessage], temperature: float = 0.7
     ) -> str:
         """生成 AI 响应"""
         self.chat_model.temperature = temperature
@@ -57,7 +57,6 @@ class ChatController:
         message: ChatMessageCreate,
         sessionDB: AsyncSession,
         system_prompt: str | None = None,
-        temperature: float = 0.7,
     ) -> Tuple[str, UUID]:
         """处理发送消息的主流程"""
         async with sessionDB.begin():
@@ -73,9 +72,7 @@ class ChatController:
             langchain_messages.append(HumanMessage(content=message.content))
 
             # 生成 AI 响应
-            ai_response = await self._generate_ai_response(
-                langchain_messages, temperature
-            )
+            ai_response = await self._generate_ai_response(langchain_messages)
 
             # 保存消息对
             user_message, _ = await create_chat_messages(
