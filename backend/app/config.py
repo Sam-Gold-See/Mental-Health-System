@@ -21,6 +21,10 @@ class Config(pydantic_settings.BaseSettings):
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(...)
     JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = Field(...)
 
+    # OpenAI配置
+    OPENAI_API_KEY: SecretStr = Field(...)
+    OPENAI_MODEL: str = Field(...)
+    OPENAI_BASE_URL: str = Field(...)
 
 # 创建配置实例
 config = Config()

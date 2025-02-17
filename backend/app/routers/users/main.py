@@ -1,15 +1,16 @@
 from typing import Literal
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from .models import UserCreate, pwd_context
 from pydantic import UUID4, BaseModel, EmailStr
+
+from .models import UserCreate, pwd_context
 from .repository import (
     get_user_from_db,
     create_user_in_db,
     get_user_from_db_by_email_or_phone,
 )
+
 from app.utils.logger import get_logger
-from .controller import *
 from app.db.main import get_session
 from app.dependencies import get_current_user, token_manager
 

@@ -6,6 +6,7 @@ from app.utils.logger import get_logger
 from app.routers import (
     # image,
     users,
+    chat,
 )
 from app.middlewares import RequestLogMiddleware, TokenRefreshMiddleware
 
@@ -26,6 +27,7 @@ app = FastAPI(lifespan=lifespan)
 for router in [
     # image.router,
     users.router,
+    chat.router,
 ]:
     app.include_router(router)
 
